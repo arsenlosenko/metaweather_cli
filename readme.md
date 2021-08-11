@@ -1,4 +1,4 @@
-# Restaurant API 
+# Metaweather CLI
 
 ## App Setup 
 ```
