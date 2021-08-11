@@ -31,8 +31,8 @@ def forecast(query, latt, long):
         """
         for forecast in result["forecast"]:
             msg += f"""
-            Weather briefly: {forecast["weather_state_name"]}
             Date: {forecast["applicable_date"]}
+            Weather briefly: {forecast["weather_state_name"]}
             Min Temp: {round_temp(forecast["min_temp"])} C
             Max Temp: {round_temp(forecast["max_temp"])} C
             Avg Temp: {round_temp(forecast["the_temp"])} C
