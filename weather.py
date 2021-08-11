@@ -1,7 +1,7 @@
 import click
-import requests
 
-from typing import List, Dict
+from utils import print_styled_message, round_temp
+from api_client import get_weather_forecast, get_woeids
 
 
 @click.command()
@@ -21,10 +21,10 @@ def forecast(query, latt, long):
         click.echo("please use either a '--query' command, or '--latt' and '--long' commands")
         return
 
-    print_msg("Searching for entered location...", bg="blue", fg="white", bold=True)
+    print_styled_message("Searching for entered location...", bg="blue", fg="white", bold=True)
     woeids = get_woeids(query_params)
     results = get_weather_forecast(woeids)
-    print_msg("Showing results:", fg="white", bg="blue", bold=True)
+    print_styled_message("Showing results:", fg="white", bg="blue", bold=True)
     for result in results:
         msg = f"""
         City: {result["location"]}\n
@@ -41,36 +41,5 @@ def forecast(query, latt, long):
         click.echo(msg)
 
 
-def print_msg(text, fg=None, bg=None, bold=False):
-    click.echo(click.style(text, fg=fg, bg=bg, bold=bold))
-
-
-def round_temp(temp):
-    if temp:
-        return round(float(temp))
-    return temp
-
-
-def get_woeids(query_params: Dict) -> List[str]:
-    url = "https://www.metaweather.com/api/location/search/"
-    resp = requests.get(url, params=query_params)
-    woeids = list()
-    if resp.json():
-        for result in resp.json():
-            woeids.append(result["woeid"])
-    return woeids
-
-def get_weather_forecast(woeids: List[str]) -> List[Dict]:
-    results = list()
-    for woeid in woeids:
-        url = f"https://www.metaweather.com/api/location/{woeid}/"
-        resp = requests.get(url)
-        if resp.json():
-            results.append({
-                "location": resp.json()["title"],
-                "forecast": resp.json()["consolidated_weather"]
-            })
-    return results
-        
 if __name__ == "__main__":
     forecast()
